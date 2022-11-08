@@ -1,0 +1,82 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "console_title_template": "{{.Shell}} :: /{{.Folder}}",
+  "blocks": [
+    {
+      "alignment": "right",
+      "segments": [
+        {
+          "style": "diamond",
+          "background": "#363636",
+          "leading_diamond": " ",
+          "foreground": "#ffffff",
+          "properties": {
+            "style": "roundrock",
+            "threshold": 0,
+            "always_enabled": true
+          },
+          "template": "\ufbab {{ .FormattedMs }}",
+          "type": "executiontime"
+        },
+        {
+          "style": "powerline",
+          "background": "#363636",
+          "foreground": "#ffffff",
+          "template": " \uf85a CPU:{{ round .PhysicalPercentUsed .Precision }}% \uf85a MEM:{{ (div ((sub .PhysicalTotalMemory .PhysicalFreeMemory)|float64) 1000000000.0) }}/{{ (div .PhysicalTotalMemory 1000000000.0) }}GB ",
+          "type": "sysinfo"
+        },
+        {
+          "style": "powerline",
+          "background": "#47484b",
+          "leading_diamond": "\ue0b2",
+          "foreground": "#ffffff",
+          "template": "\uE718 {{ .Full }} ",
+          "type": "node"
+        }
+      ],
+      "type": "prompt"
+    },
+    {
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "foreground": "#ffffff",
+          "properties": {
+            "folder_separator_icon": "/",
+            "style": "full"
+          },
+          "style": "powerline",
+          "template": "  {{ .Path }} ",
+          "type": "path"
+        },
+        {
+          "foreground": "#ffffff",
+          "properties": {
+            "fetch_upstream_icon": true,
+            "fetch_stash_count": true,
+            "fetch_status": true
+          },
+          "style": "powerline",
+          "template": "{{ .UpstreamIcon }}{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} \uF044 {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} \uF046 {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }} \uF692 {{ .StashCount }}{{ end }}",
+          "type": "git"
+        }
+      ],
+      "type": "prompt"
+    },
+    {
+      "alignment": "left",
+      "newline": true,
+      "segments": [
+        {
+          "foreground": "#ffffff",
+          "style": "powerline",
+          "template": " \uf489 > ",
+          "type": "text"
+        }
+      ],
+      "type": "prompt"
+    }
+  ],
+  "version": 2
+}
