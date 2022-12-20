@@ -12,7 +12,7 @@ $env:LOCAL_DOMAIN = "jopereira.local"
 . $PSScriptRoot\scripts\wsl-alias.ps1
 
 ### tooling
-Set-Alias -Name portainer-stacks "$env:TOOLING_REPO\pwsh\portainer\portainer-stacks.ps1" -Option AllScope
+Set-Alias -Name portainer-stacks "$env:TOOLING_REPO\pwsh\portainer\portainer-manage-stacks.ps1" -Option AllScope
 
 #region lazy alias
 
