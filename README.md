@@ -1,2 +1,2 @@
 # tooling
-my personal tooling (powershell snippets, ansible playbooks...)
+my personal tooling (powershell scripts, ansible playbooks...)
