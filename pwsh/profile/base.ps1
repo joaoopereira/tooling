@@ -1,18 +1,18 @@
 ### environment variables vars
-$env:TOOLING_REPO = "$PSScriptRoot\..\.."
+$env:TOOLING_REPO = "$PSScriptRoot/../.."
 $env:LOCAL_DOMAIN = "jopereira.local"
 
 ### terminal customizations
-. $PSScriptRoot\scripts\terminal-customizations.ps1
+. $PSScriptRoot/scripts/terminal-customizations.ps1
 
 ### git
-. $PSScriptRoot\scripts\git-alias.ps1
+. $PSScriptRoot/scripts/git-alias.ps1
 
 ### wsl
-. $PSScriptRoot\scripts\wsl-alias.ps1
+. $PSScriptRoot/scripts/wsl-alias.ps1
 
 ### tooling
-Set-Alias -Name portainer-stacks "$env:TOOLING_REPO\pwsh\portainer\portainer-manage-stacks.ps1" -Option AllScope
+Set-Alias -Name portainer-stacks "$env:TOOLING_REPO/pwsh/portainer/portainer-manage-stacks.ps1" -Option AllScope
 
 #region lazy alias
 
@@ -21,7 +21,7 @@ function chocoupgrade {
 }
 
 function ansible {
-	docker run --rm -ti -v ${pwd}:\local ansible bash
+	docker run --rm -ti -v ${pwd}:/local ansible bash
 }
 
 function open {
@@ -30,12 +30,12 @@ function open {
 }
 
 function drive {
-	Set-Location "G:\My Drive"
+	Set-Location "G:/My Drive"
 	Clear-Host
 }
 
 function temp {
-	$myTemp = C:\_temp
+	$myTemp = C:/_temp
 	if (!(Get-Item $myTemp)) {
 		New-Item -ItemType Directory -Path $myTemp
 	}

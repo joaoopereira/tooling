@@ -48,16 +48,16 @@ catch {
 
 if (!$file) {
     $stacks = $stacks.Where({ $_.Name -match $nameFilter -and !($_.Name -eq "portainer") })
-    $file = "$PSScriptRoot\listed-stacks.json"
+    $file = "$PSScriptRoot/listed-stacks.json"
 
     if ($run -eq "stop") {
         $stacks = $stacks.Where({ $run -eq "stop" -and $_.status -eq 1 })
-        $file = "$PSScriptRoot\stopped-stacks.json"
+        $file = "$PSScriptRoot/stopped-stacks.json"
 
     }
     elseif ($run -eq "start") {
         $stacks = $stacks.Where({ $run -eq "start" -and $_.status -eq 2 })
-        $file = "$PSScriptRoot\started-stacks.json"
+        $file = "$PSScriptRoot/started-stacks.json"
     }
 
     if ($export) {
