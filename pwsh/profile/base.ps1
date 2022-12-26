@@ -6,7 +6,8 @@ $env:LOCAL_DOMAIN = "jopereira.local"
 . $PSScriptRoot/scripts/terminal-customizations.ps1
 
 ### git
-. $PSScriptRoot/scripts/git-alias.ps1
+## CREDITS: https://github.com/gluons/powershell-git-aliases
+Import-Module git-aliases -DisableNameChecking
 
 ### wsl
 . $PSScriptRoot/scripts/wsl-alias.ps1
