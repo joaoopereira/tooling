@@ -1,9 +1,10 @@
 ### wsl alias
-# only works on windows machines
-if ($IsWindows) {
-	## import commands
+# only works on windows machines with wsl enabled
+if ($IsWindows -and
+	((Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux).State -eq "Enabled")) {
 	## CREDITS: https://devblogs.microsoft.com/commandline/integrate-linux-commands-into-windows-with-powershell-and-the-windows-subsystem-for-linux/
 	Install-Module WslInterop
+	# import commands
 	Import-WslCommand "apt", "awk", "emacs", "find", "grep", "head", "less", "ls", "man", "sed", "seq", "ssh", "sudo", "tail", "touch", "vim", "docker", "docker-compose", "date"
 
 	# workaround for accessing the WSL from windows
