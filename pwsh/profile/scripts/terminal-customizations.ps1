@@ -12,4 +12,4 @@ Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
 Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
 
 # Ensure posh-git is loaded
-oh-my-posh init pwsh --config "$PSScriptRoot/../../oh-my-posh/config.json" | Invoke-Expression
+oh-my-posh init pwsh --config "$PSScriptRoot/../../../oh-my-posh/config.json" | Invoke-Expression
