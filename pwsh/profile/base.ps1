@@ -36,7 +36,7 @@ function drive {
 }
 
 function temp {
-	$myTemp = C:/_temp
+	$myTemp = "C:/_temp"
 	if (!(Get-Item $myTemp)) {
 		New-Item -ItemType Directory -Path $myTemp
 	}
