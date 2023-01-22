@@ -5,7 +5,7 @@ if ($IsWindows -and
 	## CREDITS: https://devblogs.microsoft.com/commandline/integrate-linux-commands-into-windows-with-powershell-and-the-windows-subsystem-for-linux/
 	Install-Module WslInterop
 	# import commands
-	Import-WslCommand "apt", "awk", "emacs", "find", "grep", "head", "less", "ls", "man", "sed", "seq", "ssh", "sudo", "tail", "touch", "vim", "docker", "docker-compose", "date"
+	Import-WslCommand "apt", "awk", "emacs", "find", "grep", "head", "less", "ls", "man", "sed", "seq", "sudo", "tail", "touch", "vim", "docker", "docker-compose", "date", "rm"
 
 	# workaround for accessing the WSL from windows
 	# with a custom dns entry defined by environment variable LOCAL_DOMAIN
