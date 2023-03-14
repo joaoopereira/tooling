@@ -7,6 +7,7 @@ $env:LOCAL_DOMAIN = "jopereira.local"
 
 ### git
 ## CREDITS: https://github.com/gluons/powershell-git-aliases
+Install-Module -Name git-aliases -RequiredVersion 0.2.3
 Import-Module git-aliases -DisableNameChecking
 
 ### wsl
