@@ -2,12 +2,19 @@
 $env:TOOLING_REPO = "$PSScriptRoot/../.."
 $env:LOCAL_DOMAIN = "jopereira.local"
 
+# Check if PowerShell is running with administrative privileges
+$IsAdmin = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+if(!$IsAdmin)
+{
+	Write-Host "PowerShell is not running with administrative privileges" -ForegroundColor Yellow
+}
+
 ### terminal customizations
 . $PSScriptRoot/scripts/terminal-customizations.ps1
 
 ### git
 ## CREDITS: https://github.com/gluons/powershell-git-aliases
-Import-Module git-aliases -DisableNameChecking
+Install-Module git-aliases -Scope CurrentUser -AllowClobber -Force
 
 ### wsl
 . $PSScriptRoot/scripts/wsl-alias.ps1
