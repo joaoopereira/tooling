@@ -1,5 +1,5 @@
 ### terminal customizations
-$env:OH_MY_POSH_CONFIG = $env:OH_MY_POSH_CONFIG ?? "$env:TOOLING_REPO/oh-my-posh/config.json"
+$env:OH_MY_POSH_CONFIG = $env:OH_MY_POSH_CONFIG ?? "$PSScriptRoot/../oh-my-posh/config.json"
 
 # Make addon listen to history
 Set-PSReadLineOption -PredictionSource HistoryAndPlugin

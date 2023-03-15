@@ -3,7 +3,7 @@
 if ($IsWindows -and $IsAdmin -and
 	((Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux).State -eq "Enabled")) {
 	## CREDITS: https://devblogs.microsoft.com/commandline/integrate-linux-commands-into-windows-with-powershell-and-the-windows-subsystem-for-linux/
-	Import-Module "$env:TOOLING_REPO/pwsh/wsl-interop/WslInterop.psd1"
+	Import-Module "$env:TOOLING_REPO/pwsh/profile/plugins/wsl-interop/WslInterop.psd1"
 	# import commands
 	Import-WslCommand "apt", "awk", "emacs", "find", "grep", "head", "less", "ls", "man", "sed", "seq", "sudo", "tail", "touch", "vim", "docker", "docker-compose", "date", "rm", "earthly", "openssl"
 
@@ -38,7 +38,7 @@ if ($IsWindows -and $IsAdmin -and
 	function wsl-restart {
 		Get-Service LxssManager | Restart-Service
 		Start-Sleep -Seconds 5
-		wsl-refresh-ip
+		wsl-ip
 	}
 
 	function wsl-docker-restart {
