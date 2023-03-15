@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/gluons/powershell-git-aliases.git
+	branch = master
+	commit = 250c1a8b7e6e2896ae98781a6f61dc3262c12050
+	parent = 3f9c0a28c712cb69b9f5e388c5a23b5b59c612ac
+	method = merge
+	cmdver = 0.4.5

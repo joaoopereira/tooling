@@ -16,7 +16,7 @@ $IsChocoInstalled = [bool](Get-Command choco -ErrorAction SilentlyContinue)
 
 ### git
 ## CREDITS: https://github.com/gluons/powershell-git-aliases
-Install-Module git-aliases -Scope CurrentUser -AllowClobber -Force
+Import-Module "$env:TOOLING_REPO/pwsh/git-aliases/src/git-aliases.psd1" -DisableNameChecking
 
 ### wsl
 . $PSScriptRoot/scripts/wsl-alias.ps1
