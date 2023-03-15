@@ -1,4 +1,5 @@
 ### terminal customizations
+$env:OH_MY_POSH_CONFIG = $env:OH_MY_POSH_CONFIG ?? "$env:TOOLING_REPO/oh-my-posh/config.json"
 
 # Make addon listen to history
 Set-PSReadLineOption -PredictionSource HistoryAndPlugin
@@ -12,7 +13,7 @@ Set-PSReadlineKeyHandler -Key UpArrow -Function HistorySearchBackward
 Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
 
 # Ensure posh-git is loaded
-oh-my-posh init pwsh --config "$env:TOOLING_REPO/oh-my-posh/config.json" | Invoke-Expression
+oh-my-posh init pwsh --config "$env:OH_MY_POSH_CONFIG" | Invoke-Expression
 
 # zoxide install and configurations
 if($IsChocoInstalled -and ![bool](Get-Command zoxide -ErrorAction SilentlyContinue))
