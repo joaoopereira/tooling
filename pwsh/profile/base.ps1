@@ -9,6 +9,8 @@ if(!$IsAdmin)
 	Write-Host "PowerShell is not running with administrative privileges" -ForegroundColor Yellow
 }
 
+$IsChocoInstalled = [bool](Get-Command choco -ErrorAction SilentlyContinue)
+
 ### terminal customizations
 . $PSScriptRoot/scripts/terminal-customizations.ps1
 
