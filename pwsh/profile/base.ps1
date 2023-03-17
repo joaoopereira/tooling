@@ -1,6 +1,6 @@
 ### environment variables
 $env:TOOLING_REPO = "$PSScriptRoot/../.."
-$env:LOCAL_DOMAIN = "jopereira.local"
+$env:LOCAL_DOMAIN = $env:LOCAL_DOMAIN ?? "jopereira.local"
 
 # Check if PowerShell is running with administrative privileges
 $global:IS_ADMIN = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
