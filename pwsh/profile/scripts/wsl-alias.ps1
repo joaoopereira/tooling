@@ -1,6 +1,6 @@
 ### wsl alias
 # only works on windows machines with wsl enabled
-if ($IsWindows -and $IsAdmin -and
+if ($IsWindows -and $global:IS_ADMIN -and
 	((Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux).State -eq "Enabled")) {
 	## CREDITS: https://devblogs.microsoft.com/commandline/integrate-linux-commands-into-windows-with-powershell-and-the-windows-subsystem-for-linux/
 	Import-Module "$env:TOOLING_REPO/pwsh/profile/plugins/wsl-interop/WslInterop.psd1"
