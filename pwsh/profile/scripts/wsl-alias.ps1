@@ -39,6 +39,7 @@ if ($IsWindows -and $IsAdmin -and
 		Get-Service LxssManager | Restart-Service
 		Start-Sleep -Seconds 5
 		wsl-ip
+		wsl-docker-restart
 	}
 
 	function wsl-docker-restart {
