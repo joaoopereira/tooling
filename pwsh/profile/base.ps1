@@ -39,7 +39,8 @@ $env:MANPATH = "$env:GIT_SUBREPO_ROOT/man"
 
 #region lazy alias
 
-function o { if ($IsWindows) { explorer .; Clear-Host } }
+function o { if ($IsWindows) { explorer . && Clear-Host } elseif ($IsMacOS) { open . && Clear-Host } }
+
 function cupgrade { if ($global:IS_CHOCO_INSTALLED) { choco upgrade all -y } }
 
 function bupgrade { if ($global:IS_BREW_INSTALLED) { brew update; brew upgrade } }
