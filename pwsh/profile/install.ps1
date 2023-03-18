@@ -8,4 +8,7 @@ if(!$git)
 git clone https://github.com/joaoopereira/tooling.git ./tooling
 $basePath = "$pwd/tooling/pwsh/profile/base.ps1"
 
-". `"$basePath`"" >> $PROFILE
+if(!(Get-Content $PROFILE).Contains(". `"$basePath`""))
+{
+    ". `"$basePath`"" >> $PROFILE
+}
