@@ -11,7 +11,8 @@ if ($IsWindows -and $global:IS_ADMIN -and
 	# with a custom dns entry defined by environment variable LOCAL_DOMAIN
 	# this will allow to have multiple entries
 	# alternative to this function is wsl2host (https://github.com/shayne/go-wsl2-host)
-	function wsl-ip {
+	function wsli {
+		Write-Host "Updating hosts file with new ips for all *.$env:LOCAL_DOMAIN..." -ForegroundColor Gray
 		$env:LOCAL_DOMAIN = $env:LOCAL_DOMAIN ?? "wsl.local"
 		$wslIpAddr = (wsl hostname -I).Trim()
 		$ip = $wslIpAddr.Split(" ")[0]
@@ -24,27 +25,54 @@ if ($IsWindows -and $global:IS_ADMIN -and
 			foreach ($match in $matchResult) {
 				$hostname = $match.Value.Split(" ")[1];
 				$old_ip = $match.Value.Split(" ")[0];
-				Write-Host "replacing [$old_ip $hostname] with [$ip $hostname]" -ForegroundColor Blue
+				# Write-Host "replacing [$old_ip $hostname] with [$ip $hostname]" -ForegroundColor Gray
 				$hostfile = [System.Text.RegularExpressions.Regex]::Replace($hostfile, $match, "$ip $hostname")
 			}
 			$hostfile | Set-Content -Path $hostfilePath
 		}
 		else {
-			Write-Host "adding [$hostname $ip]" -ForegroundColor Blue
+			# Write-Host "adding [$hostname $ip]" -ForegroundColor Gray
 			Add-Content -Path $hostfilePath ([Environment]::NewLine + "$ip $env:LOCAL_DOMAIN")
 		}
 	}
 
+	# restart wsl
+	function wslr {
+		Write-Host "Restarting wsl..." -ForegroundColor Gray
+		wsl --shutdown
+
+		# docker resstart
+		wsldr
+
+		# set hostname on hosts file
+		wsli
+	}
+
+	function isDockerRunning {
+		return !(wsl docker ps 2>&1).ToString().Contains("Cannot connect to the Docker daemon");
+	}
+
+	# restart wsl
+	function wsldr {
+		Write-Host "Waiting for docker to start..." -ForegroundColor Gray
+		if (isDockerRunning) {
+			wsl bash -ic "sudo service docker stop &>/dev/null"
+		}
+
+		wsl bash -ic "sudo service docker start &>/dev/null"
+
+		while (!(isDockerRunning)) {
+			Start-Sleep -Milliseconds 500
+		}
+	}
+
 	function wsl-restart {
-		Get-Service LxssManager | Restart-Service
-		Start-Sleep -Seconds 5
-		wsl-ip
-		wsl-docker-restart
+		Write-Host "This command will be deprecated in the next release. Please use wslr" -ForegroundColor Yellow
+		wslr
 	}
 
 	function wsl-docker-restart {
-		wsl sudo service docker stop
-		wsl sudo service docker start
+		Write-Host "This command will be deprecated in the next release. Please use wsldr" -ForegroundColor Yellow
+		wsldr
 	}
-
 }
