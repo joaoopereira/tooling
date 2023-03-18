@@ -3,18 +3,21 @@ $env:TOOLING_REPO = "$PSScriptRoot/../.."
 $env:LOCAL_DOMAIN = $env:LOCAL_DOMAIN ?? "jopereira.local"
 
 ### pre-requirements
-# chocolatey
+# chocolatey for windows
 $global:IS_CHOCO_INSTALLED = [bool](Get-Command choco -ErrorAction SilentlyContinue)
 if($IsWindows -and !$global:IS_CHOCO_INSTALLED)
 {
 	Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 }
 
+# brew for macos
+$global:IS_BREW_INSTALLED = [bool](Get-Command brew -ErrorAction SilentlyContinue)
+
 ### global variables
 # Check if PowerShell is running with administrative privileges
-$global:IS_ADMIN = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-if($IsWindows -and !$global:IS_ADMIN)
+if($IsWindows)
 {
+	$global:IS_ADMIN = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 	Write-Host "PowerShell is not running with administrative privileges. Some features may not work." -ForegroundColor Yellow
 }
 
@@ -41,10 +44,11 @@ $env:MANPATH="$env:GIT_SUBREPO_ROOT/man"
 
 #region lazy alias
 
-function chocoupgrade { choco upgrade all -y }
+function o { if($IsWindows) { explorer .;Clear-Host } }
+function cupgrade { if($global:IS_CHOCO_INSTALLED) { choco upgrade all -y } }
+
+function bupgrade { if($global:IS_BREW_INSTALLED) { brew update; brew upgrade } }
 
 function ansible { docker run --rm -ti -v ${pwd}:/local ansible bash }
-
-function o { explorer .;Clear-Host }
 
 #endregion

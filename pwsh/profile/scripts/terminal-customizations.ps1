@@ -16,9 +16,13 @@ Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
 oh-my-posh init pwsh --config "$env:OH_MY_POSH_CONFIG" | Invoke-Expression
 
 # zoxide install and configurations
-if($global:IS_CHOCO_INSTALLED -and ![bool](Get-Command zoxide -ErrorAction SilentlyContinue))
-{
-    choco install -y zoxide
+if (![bool](Get-Command zoxide -ErrorAction SilentlyContinue)) {
+    if ($global:IS_CHOCO_INSTALLED) {
+        choco install -y zoxide
+    }
+    elseif ($global:IS_BREW_INSTALLED) {
+        brew install zoxide
+    }
 }
 
 Invoke-Expression (& {
