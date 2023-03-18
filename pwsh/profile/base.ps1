@@ -2,14 +2,23 @@
 $env:TOOLING_REPO = "$PSScriptRoot/../.."
 $env:LOCAL_DOMAIN = $env:LOCAL_DOMAIN ?? "jopereira.local"
 
+### pre-requirements
+# chocolatey
+$global:IS_CHOCO_INSTALLED = [bool](Get-Command choco -ErrorAction SilentlyContinue)
+if($IsWindows -and !$global:IS_CHOCO_INSTALLED)
+{
+	Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+}
+
+### global variables
 # Check if PowerShell is running with administrative privileges
 $global:IS_ADMIN = ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-if(!$global:IS_ADMIN)
+if($IsWindows -and !$global:IS_ADMIN)
 {
 	Write-Host "PowerShell is not running with administrative privileges. Some features may not work." -ForegroundColor Yellow
 }
 
-$global:IS_CHOCO_INSTALLED = [bool](Get-Command choco -ErrorAction SilentlyContinue)
+
 
 ### terminal customizations
 . $PSScriptRoot/scripts/terminal-customizations.ps1
