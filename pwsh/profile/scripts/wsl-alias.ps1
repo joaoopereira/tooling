@@ -12,8 +12,8 @@ if ($global:IS_WINDOWS_ADMIN -and
 	# this will allow to have multiple entries
 	# alternative to this function is wsl2host (https://github.com/shayne/go-wsl2-host)
 	function wsli {
-		Write-Host "Updating hosts file with new ips for all *.$env:LOCAL_DOMAIN..." -ForegroundColor Gray
 		$env:LOCAL_DOMAIN = $env:LOCAL_DOMAIN ?? "wsl.local"
+		Write-Host "Updating hosts file with new ips for all *.$env:LOCAL_DOMAIN..." -ForegroundColor Gray
 		$wslIpAddr = (wsl hostname -I).Trim()
 		$ip = $wslIpAddr.Split(" ")[0]
 
