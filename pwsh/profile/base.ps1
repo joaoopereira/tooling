@@ -47,6 +47,6 @@ function bupgrade { if ($global:IS_BREW_INSTALLED) { brew update; brew upgrade }
 
 function ansible { docker run --rm -ti -v ${pwd}:/local ansible bash }
 
-function tupdate { Set-Location $env:TOOLING_REPO && git pull 2>&1 >/dev/null && Set-Location - }
+function tupdate { Write-Host "Updating tooling..." && Set-Location $env:TOOLING_REPO && (git pull 2>&1 >$null) && Set-Location - }
 
 #endregion
