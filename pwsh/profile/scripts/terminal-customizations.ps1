@@ -4,6 +4,7 @@ $env:OH_MY_POSH_CONFIG = $env:OH_MY_POSH_CONFIG ?? "$PSScriptRoot/../oh-my-posh/
 # Make addon listen to history
 Set-PSReadLineOption -PredictionSource HistoryAndPlugin
 Set-PSReadLineOption -PredictionViewStyle ListView
+Set-PSReadLineOption -HistoryNoDuplicates:$true
 
 # Shows navigable menu of all options when hitting Tab
 Set-PSReadlineKeyHandler -Key Tab -Function MenuComplete
