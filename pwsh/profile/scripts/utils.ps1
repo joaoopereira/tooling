@@ -4,7 +4,7 @@ function CheckToolingUpdates {
     Set-Location $env:TOOLING_REPO
 
     # Fetch the latest changes from the origin branch
-    git fetch origin 2>&1 >$null
+    git fetch origin > $null
 
     # Get the hash of the last commit on the local branch
     $localCommitHash = (git log -n 1 --pretty=format:"%h" HEAD)
