@@ -165,7 +165,7 @@ function ggf {
 function ggfl {
 	$CurrentBranch = Get-Git-CurrentBranch
 
-	git push --force-with-lease origin $CurrentBranch
+	git push --force-with-lease --force-if-includes origin $CurrentBranch
 }
 function ghh {
 	git help $args
@@ -245,7 +245,7 @@ function gpd {
 	git push --dry-run $args
 }
 function gpf {
-	git push --force-with-lease $args
+	git push --force-with-lease --force-if-includes $args
 }
 function gpf! {
 	git push --force $args
