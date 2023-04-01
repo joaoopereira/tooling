@@ -45,9 +45,6 @@ function SetWindowsAdmin {
 }
 
 function CanAccessGithub {
-    $global:ProgressPreference = "SilentlyContinue"
-    $result = (Test-NetConnection github.com -WarningAction SilentlyContinue -ErrorAction SilentlyContinue).PingSucceeded
-    $global:ProgressPreference = "Continue"
-
-    return $result
+    $result = (Test-Connection github.com -WarningAction SilentlyContinue -ErrorAction SilentlyContinue -Count 1).Status
+    return ($result -eq "Success")
 }
