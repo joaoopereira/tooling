@@ -5,36 +5,7 @@ if ($global:IS_WINDOWS_ADMIN -and
 	## CREDITS: https://devblogs.microsoft.com/commandline/integrate-linux-commands-into-windows-with-powershell-and-the-windows-subsystem-for-linux/
 	Import-Module "$env:TOOLING_REPO/pwsh/profile/plugins/wsl-interop/WslInterop.psd1"
 	# import commands
-	Import-WslCommand "apt", "awk", "emacs", "find", "grep", "head", "less", "ls", "man", "sed", "seq", "sudo", "tail", "touch", "vim", "docker", "docker-compose", "date", "rm", "earthly", "openssl", "make"
-
-	# workaround for accessing the WSL from windows
-	# with a custom dns entry defined by environment variable LOCAL_DOMAIN
-	# this will allow to have multiple entries
-	# alternative to this function is wsl2host (https://github.com/shayne/go-wsl2-host)
-	function wsli {
-		$env:LOCAL_DOMAIN = $env:LOCAL_DOMAIN ?? "wsl.local"
-		Write-Host "Updating hosts file with new ips for all *.$env:LOCAL_DOMAIN..." -ForegroundColor Gray
-		$wslIpAddr = (wsl hostname -I).Trim()
-		$ip = $wslIpAddr.Split(" ")[0]
-
-		$hostfilePath = "C:\windows\system32\drivers\etc\hosts"
-		$hostfile = (Get-Content $hostfilePath -Encoding UTF8 -Raw).Trim()
-		$matchResult = [System.Text.RegularExpressions.Regex]::Matches($hostfile, "(?<ip>[\d\.]*\.[\d\.]*).*$env:LOCAL_DOMAIN")
-
-		if ($matchResult.Count) {
-			foreach ($match in $matchResult) {
-				$hostname = $match.Value.Split(" ")[1];
-				$old_ip = $match.Value.Split(" ")[0];
-				# Write-Host "replacing [$old_ip $hostname] with [$ip $hostname]" -ForegroundColor Gray
-				$hostfile = [System.Text.RegularExpressions.Regex]::Replace($hostfile, $match, "$ip $hostname")
-			}
-			$hostfile | Set-Content -Path $hostfilePath
-		}
-		else {
-			# Write-Host "adding [$hostname $ip]" -ForegroundColor Gray
-			Add-Content -Path $hostfilePath ([Environment]::NewLine + "$ip $env:LOCAL_DOMAIN")
-		}
-	}
+	Import-WslCommand "apt", "awk", "emacs", "find", "grep", "head", "less", "ls", "man", "sed", "seq", "sudo", "tail", "touch", "vim", "docker", "docker-compose", "date", "rm", "earthly", "openssl", "make", "wget", "export"
 
 	# restart wsl
 	function wslr {
@@ -45,7 +16,21 @@ if ($global:IS_WINDOWS_ADMIN -and
 		wsldr
 
 		# set hostname on hosts file
-		wsli
+		wsl2host
+	}
+
+	## CREDITS: https://github.com/shayne/go-wsl2-host
+	function wsl2host {
+		$wsl2hostPath = "$env:TOOLING_REPO/wsl2host.exe"
+		if(!(Test-Path $wsl2hostPath)) {
+			$ProgressPreference = 'SilentlyContinue'
+			Invoke-WebRequest https://github.com/shayne/go-wsl2-host/releases/download/latest/wsl2host.exe -OutFile $env:TOOLING_REPO/wsl2host.exe
+			$ProgressPreference = 'Continue'
+		}
+
+		wsl bash -c "[[ -f ~/.wsl2hosts ]] && grep -q '$env:LOCAL_DOMAIN' ~/.wsl2hosts || echo '$env:LOCAL_DOMAIN' >> ~/.wsl2hosts"
+
+		Invoke-Expression "$wsl2hostPath run"
 	}
 
 	function isDockerRunning {
@@ -64,15 +49,5 @@ if ($global:IS_WINDOWS_ADMIN -and
 		while (!(isDockerRunning)) {
 			Start-Sleep -Milliseconds 500
 		}
-	}
-
-	function wsl-restart {
-		Write-Host "This command will be deprecated in the next release. Please use wslr" -ForegroundColor Yellow
-		wslr
-	}
-
-	function wsl-docker-restart {
-		Write-Host "This command will be deprecated in the next release. Please use wsldr" -ForegroundColor Yellow
-		wsldr
 	}
 }
