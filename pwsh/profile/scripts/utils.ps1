@@ -48,3 +48,7 @@ function CanAccessGithub {
     $result = (Test-Connection github.com -WarningAction SilentlyContinue -ErrorAction SilentlyContinue -Count 1).Status
     return ($result -eq "Success")
 }
+
+function SetupGit {
+    git config --global core.editor "code --wait"
+}
