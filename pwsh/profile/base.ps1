@@ -12,9 +12,6 @@ CheckToolingUpdates
 # chocolatey for windows
 IsChocoInstalled
 
-# brew for macos
-$global:IS_BREW_INSTALLED = [bool](Get-Command brew -ErrorAction SilentlyContinue)
-
 # Check if PowerShell is running with administrative privileges
 SetWindowsAdmin
 
@@ -41,9 +38,7 @@ $env:MANPATH = "$env:GIT_SUBREPO_ROOT/man"
 
 function o { if ($IsWindows) { explorer . && Clear-Host } elseif ($IsMacOS) { open . && Clear-Host } }
 
-function cupgrade { if ($global:IS_CHOCO_INSTALLED) { choco upgrade all -y } }
-
-function bupgrade { if ($global:IS_BREW_INSTALLED) { brew update; brew upgrade } }
+function cupgrade { choco upgrade all -y }
 
 function ansible { docker run --rm -ti -v ${pwd}:/local ansible bash }
 

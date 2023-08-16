@@ -1,7 +1,6 @@
 # requirements
 this poweshell profile, installs by default a package manager:
 - [chocolatey](https://chocolatey.org/) (on windows)
-- [homebrew](https://brew.sh/) (on macos)
 
 # installation
 in the target folder, run:
