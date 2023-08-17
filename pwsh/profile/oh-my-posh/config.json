@@ -1,82 +1,82 @@
 {
   "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
+  "version": 2,
   "console_title_template": "{{.Shell}} :: /{{.Folder}}",
   "blocks": [
     {
+      "type": "prompt",
       "alignment": "right",
       "segments": [
         {
+          "type": "executiontime",
           "style": "diamond",
+          "foreground": "#ffffff",
           "background": "#363636",
           "leading_diamond": " ",
-          "foreground": "#ffffff",
+          "template": "\udb81\udead {{ .FormattedMs }}",
           "properties": {
+            "always_enabled": true,
             "style": "roundrock",
-            "threshold": 0,
-            "always_enabled": true
-          },
-          "template": "\ufbab {{ .FormattedMs }}",
-          "type": "executiontime"
+            "threshold": 0
+          }
         },
         {
+          "type": "sysinfo",
           "style": "powerline",
-          "background": "#363636",
           "foreground": "#ffffff",
-          "template": " \uf85a CPU:{{ round .PhysicalPercentUsed .Precision }}% \uf85a MEM:{{ (div ((sub .PhysicalTotalMemory .PhysicalFreeMemory)|float64) 1000000000.0) }}/{{ (div .PhysicalTotalMemory 1000000000.0) }}GB ",
-          "type": "sysinfo"
+          "background": "#363636",
+          "template": " \udb80\udf5b CPU:{{ round .PhysicalPercentUsed .Precision }}% \udb80\udf5b MEM:{{ (div ((sub .PhysicalTotalMemory .PhysicalFreeMemory)|float64) 1000000000.0) }}/{{ (div .PhysicalTotalMemory 1000000000.0) }}GB "
         },
         {
+          "type": "node",
           "style": "powerline",
+          "foreground": "#ffffff",
           "background": "#47484b",
           "leading_diamond": "\ue0b2",
-          "foreground": "#ffffff",
-          "template": "\uE718 {{ .Full }} ",
-          "type": "node"
+          "template": "\ue718 {{ .Full }} "
         }
-      ],
-      "type": "prompt"
+      ]
     },
     {
+      "type": "prompt",
       "alignment": "left",
-      "newline": true,
       "segments": [
         {
+          "type": "path",
+          "style": "powerline",
           "foreground": "#ffffff",
+          "template": " \uf07b {{ .Path }} ",
           "properties": {
             "folder_separator_icon": "/",
             "style": "full"
-          },
-          "style": "powerline",
-          "template": "  {{ .Path }} ",
-          "type": "path"
+          }
         },
         {
-          "foreground": "#ffffff",
-          "properties": {
-            "fetch_upstream_icon": true,
-            "fetch_stash_count": true,
-            "fetch_status": true
-          },
+          "type": "git",
           "style": "powerline",
-          "template": "{{ .UpstreamIcon }}{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} \uF044 {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} \uF046 {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }} \uF692 {{ .StashCount }}{{ end }}",
-          "type": "git"
+          "foreground": "#ffffff",
+          "template": "{{ .UpstreamIcon }}{{ .HEAD }}{{if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} \uf046 {{ .Staging.String }}{{ end }}{{ if gt .StashCount 0 }} \udb80\udd93 {{ .StashCount }}{{ end }}",
+          "properties": {
+            "fetch_stash_count": true,
+            "fetch_status": true,
+            "fetch_upstream_icon": true
+          }
         }
       ],
-      "type": "prompt"
+      "newline": true
     },
     {
+      "type": "prompt",
       "alignment": "left",
-      "newline": true,
       "segments": [
         {
-          "foreground": "#ffffff",
+          "type": "text",
           "style": "powerline",
-          "template": " \uf489 > ",
-          "type": "text"
+          "foreground": "#ffffff",
+          "template": " \uf489 > "
         }
       ],
-      "type": "prompt"
+      "newline": true
     }
-  ],
-  "version": 2
+  ]
 }
