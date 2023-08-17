@@ -5,7 +5,8 @@ Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression (New-Object 
 ```
 # notes
 this poweshell profile installer, installs by default:
-- [chocolatey](https://chocolatey.org/)
-- [git](https://git-scm.com/)
+- [chocolatey](https://chocolatey.org)
+- [git](https://git-scm.com)
 - [pwsh](https://learn.microsoft.com/powershell/scripting/overview)
-- [oh-my-posh](https://ohmyposh.dev/)
+- [oh-my-posh](https://ohmyposh.dev)
+- [zoxide](https://github.com/ajeetdsouza/zoxide)

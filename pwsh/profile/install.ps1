@@ -42,6 +42,32 @@ pwsh -Command {
     {
         ". `"$basePath`"" >> $PROFILE
     }
+
+    oh-my-posh font install Meslo
+
+    $terminalSettingsFile = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json";
+    if(Test-Path $terminalSettingsFile)
+    {
+        # Create the profiles object
+        $defaults = @{
+            font = @{
+                face = "MesloLGM Nerd Font"
+            }
+        }
+
+        # Load existing settings if the file exists
+        if (Test-Path $terminalSettingsFile) {
+            $terminalSettings = Get-Content -Raw $terminalSettingsFile | ConvertFrom-Json
+        } else {
+            $terminalSettings = [PSCustomObject]@{}
+        }
+
+        # Add the "profiles" block to the settings
+        $terminalSettings.profiles.defaults = $defaults
+
+        # Convert the updated settings back to JSON and save to the file
+        $terminalSettings | ConvertTo-Json -Depth 10 | Set-Content -Path $terminalSettingsFile
+    }
 }
 
 # open
