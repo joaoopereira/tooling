@@ -25,3 +25,7 @@ Invoke-Expression (& {
     $hook = if ($PSVersionTable.PSVersion.Major -lt 6) { 'prompt' } else { 'pwd' }
     (zoxide init --hook $hook powershell | Out-String)
 })
+
+### terminal-icons
+#### CREDITS: https://github.com/devblackops/Terminal-Icons
+Import-Module "$PSScriptRoot/../plugins/terminal-icons/Terminal-Icons/Terminal-Icons.psm1" -DisableNameChecking

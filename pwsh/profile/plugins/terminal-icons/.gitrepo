@@ -1,0 +1,12 @@
+; DO NOT EDIT (unless you know what you are doing)
+;
+; This subdirectory is a git "subrepo", and this file is maintained by the
+; git-subrepo command. See https://github.com/ingydotnet/git-subrepo#readme
+;
+[subrepo]
+	remote = https://github.com/devblackops/Terminal-Icons.git
+	branch = main
+	commit = 94718409f46d2bc2db0d9136cbfd128417d293e2
+	parent = 58a4bdabeec6e0bc45f20f715a39bb1d769fbcf8
+	method = merge
+	cmdver = 0.4.5
