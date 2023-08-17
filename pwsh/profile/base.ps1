@@ -9,9 +9,6 @@ $env:LOCAL_DOMAIN = $env:LOCAL_DOMAIN ?? "jopereira.local"
 # check updates
 CheckToolingUpdates
 
-# chocolatey for windows
-IsChocoInstalled
-
 # Check if PowerShell is running with administrative privileges
 SetWindowsAdmin
 
