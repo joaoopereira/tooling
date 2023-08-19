@@ -1,7 +1,12 @@
+# variables
+$lastUpdateCheckPath = "$PSScriptRoot/lastUpdateCheck"
+
 # check if a new version of the repo is available comparing the last commits
 function CheckToolingUpdates {
 
-    if(CanAccessGithub) {
+    if((IsToCheckUpdates) -and (CanAccessGithub)) {
+        New-Item -Path $lastUpdateCheckPath -Value (Date) -ItemType File -Force | Out-Null
+        
         # move to tooling repo
         Set-Location $env:TOOLING_REPO
 
@@ -42,4 +47,21 @@ function CanAccessGithub {
 
 function SetupGit {
     git config --global core.editor "code --wait"
+}
+
+function IsToCheckUpdates {
+    $currentDate = Date
+    $isToCheckUpdates = $false
+
+    if(Test-Path $lastUpdateCheckPath) {
+       $lastUpdateCheckDate = [DateTime](Get-Content $lastUpdateCheckPath)
+       if(($currentDate - $lastUpdateCheckDate).Days -gt 15) {
+            $isToCheckUpdates = $true
+       }
+    }
+    else {
+        $isToCheckUpdates = $true
+    }
+
+    return $isToCheckUpdates
 }
