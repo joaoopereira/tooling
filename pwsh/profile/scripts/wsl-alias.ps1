@@ -4,7 +4,6 @@ if ($global:IS_WINDOWS_ADMIN -and
 	((Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux).State -eq "Enabled")) {
 	### wsl-interop
 	## CREDITS: https://github.com/mikebattista/PowerShell-WSL-Interop
-	ImportModule("WslInterop")
 	# import commands
 	Import-WslCommand "apt", "awk", "emacs", "find", "grep", "head", "less", "man", "sed", "seq", "sudo", "tail", "touch", "vim", "docker", "docker-compose", "date", "rm", "earthly", "openssl", "make", "wget", "export"
 

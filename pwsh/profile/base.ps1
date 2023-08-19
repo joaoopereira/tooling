@@ -17,7 +17,7 @@ SetWindowsAdmin
 
 ### git-aliases
 #### CREDITS: https://github.com/gluons/powershell-git-aliases
-ImportModule("git-aliases")
+Import-Module git-aliases -DisableNameChecking
 
 # import wsl-alias
 . $PSScriptRoot/scripts/wsl-alias.ps1
@@ -33,12 +33,12 @@ $env:MANPATH = "$env:GIT_SUBREPO_ROOT/man"
 
 #region lazy alias
 
-function o { if ($IsWindows) { explorer . && Clear-Host } elseif ($IsMacOS) { open . && Clear-Host } }
+function o { explorer . && Clear-Host }
 
 function cupgrade { choco upgrade all -y }
 
 function ansible { docker run --rm -ti -v ${pwd}:/local ansible bash }
 
-function tupdate { Write-Host "Updating tooling..." && Set-Location $env:TOOLING_REPO && (git pull > $null) && Set-Location - }
+function tupdate { . $PSScriptRoot/scripts/update.ps1 }
 
 #endregion

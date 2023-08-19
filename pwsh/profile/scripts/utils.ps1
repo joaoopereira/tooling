@@ -41,6 +41,7 @@ function SetWindowsAdmin {
 }
 
 function CanAccessGithub {
+    Write-Host "CAN ACCESS"
     $result = (Test-Connection github.com -WarningAction SilentlyContinue -ErrorAction SilentlyContinue -Count 1).Status
     return ($result -eq "Success")
 }
@@ -64,12 +65,4 @@ function IsToCheckUpdates {
     }
 
     return $isToCheckUpdates
-}
-
-function ImportModule($module) {
-    if(!(Get-Module $module)) {
-        Write-Host "$module module is not installed. Installing..."
-        Install-Module $module -Scope CurrentUser -AllowClobber
-    }
-    Import-Module $module -DisableNameChecking
 }
