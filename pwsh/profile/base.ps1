@@ -39,6 +39,9 @@ function cupgrade { choco upgrade all -y }
 
 function ansible { docker run --rm -ti -v ${pwd}:/local ansible bash }
 
-function tupdate { . $PSScriptRoot/scripts/update.ps1 }
+Set-Alias -Name tupdate "$PSScriptRoot/scripts/update.ps1" -Option AllScope
 
 #endregion
+
+### computer init script alias
+Set-Alias -Name computer-init "$PSScriptRoot/scripts/computer-init.ps1" -Option AllScope

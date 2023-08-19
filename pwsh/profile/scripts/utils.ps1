@@ -46,10 +46,6 @@ function CanAccessGithub {
     return ($result -eq "Success")
 }
 
-function SetupGit {
-    git config --global core.editor "code --wait"
-}
-
 function IsToCheckUpdates {
     $currentDate = Date
     $isToCheckUpdates = $false
