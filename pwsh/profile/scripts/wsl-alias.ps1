@@ -2,8 +2,9 @@
 # only works on windows machines with wsl enabled
 if ($global:IS_WINDOWS_ADMIN -and
 	((Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux).State -eq "Enabled")) {
-	## CREDITS: https://devblogs.microsoft.com/commandline/integrate-linux-commands-into-windows-with-powershell-and-the-windows-subsystem-for-linux/
-	Import-Module "$env:TOOLING_REPO/pwsh/profile/plugins/wsl-interop/WslInterop.psm1"
+	### wsl-interop
+	## CREDITS: https://github.com/mikebattista/PowerShell-WSL-Interop
+	ImportModule("WslInterop")
 	# import commands
 	Import-WslCommand "apt", "awk", "emacs", "find", "grep", "head", "less", "man", "sed", "seq", "sudo", "tail", "touch", "vim", "docker", "docker-compose", "date", "rm", "earthly", "openssl", "make", "wget", "export"
 

@@ -17,7 +17,7 @@ SetWindowsAdmin
 
 ### git-aliases
 #### CREDITS: https://github.com/gluons/powershell-git-aliases
-Import-Module "$PSScriptRoot/plugins/git-aliases/src/git-aliases.psm1" -DisableNameChecking
+ImportModule("git-aliases")
 
 # import wsl-alias
 . $PSScriptRoot/scripts/wsl-alias.ps1

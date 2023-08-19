@@ -28,4 +28,4 @@ Invoke-Expression (& {
 
 ### terminal-icons
 #### CREDITS: https://github.com/devblackops/Terminal-Icons
-Import-Module "$PSScriptRoot/../plugins/terminal-icons/Terminal-Icons/Terminal-Icons.psm1" -DisableNameChecking
+ImportModule("Terminal-Icons")

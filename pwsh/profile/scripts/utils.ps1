@@ -65,3 +65,11 @@ function IsToCheckUpdates {
 
     return $isToCheckUpdates
 }
+
+function ImportModule($module) {
+    if(!(Get-Module $module)) {
+        Write-Host "$module module is not installed. Installing..."
+        Install-Module $module -Scope CurrentUser -AllowClobber
+    }
+    Import-Module $module -DisableNameChecking
+}
