@@ -1,5 +1,5 @@
 function InstallModule($module) {
-    if(!(Get-InstalledModule $module)) {
+    if(!(Get-InstalledModule $module -ErrorAction SilentlyContinue)) {
         Write-Host "$module module is not installed. Installing..."
         Install-Module $module -Scope CurrentUser -AllowClobber -Force
     }
@@ -8,8 +8,8 @@ function InstallModule($module) {
 function InstallModules($modules) {
     foreach($module in $modules)
     {
+        Write-Host $module
         InstallModule $module
     }
 }
-
-InstallModules git-aliases WslInterop Terminal-Icons
+InstallModules git-aliases, WslInterop, Terminal-Icons

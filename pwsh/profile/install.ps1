@@ -1,8 +1,8 @@
 # chocolatey dependencies
-. $PSScriptRoot/deps/chocolatey.ps1
+Invoke-Expression (New-Object System.Net.WebClient).DownloadString("https://raw.githubusercontent.com/joaoopereira/tooling/main/pwsh/profile/deps/chocolatey.ps1")
 
 # pwsh modules dependencies
-. $PSScriptRoot/deps/pwsh-modules.ps1
+Invoke-Expression (New-Object System.Net.WebClient).DownloadString("https://raw.githubusercontent.com/joaoopereira/tooling/main/pwsh/profile/deps/pwsh-modules.ps1")
 
  # configure pwsh
 pwsh -Command {
