@@ -1,12 +1,11 @@
 # variables
 $lastUpdateCheckPath = "$PSScriptRoot/lastUpdateCheck"
-
 # check if a new version of the repo is available comparing the last commits
 function CheckToolingUpdates {
 
     if((IsToCheckUpdates) -and (CanAccessGithub)) {
-        New-Item -Path $lastUpdateCheckPath -Value (Date) -ItemType File -Force | Out-Null
-        
+        New-Item -Path $lastUpdateCheckPath -Value (Get-Date -Format "dd/MM/yyyy HH:mm:ss") -ItemType File -Force | Out-Null
+
         # move to tooling repo
         Set-Location $env:TOOLING_REPO
 
@@ -41,17 +40,16 @@ function SetWindowsAdmin {
 }
 
 function CanAccessGithub {
-    Write-Host "CAN ACCESS"
     $result = (Test-Connection github.com -WarningAction SilentlyContinue -ErrorAction SilentlyContinue -Count 1).Status
     return ($result -eq "Success")
 }
 
 function IsToCheckUpdates {
-    $currentDate = Date
+    $currentDate = Get-Date
     $isToCheckUpdates = $false
 
     if(Test-Path $lastUpdateCheckPath) {
-       $lastUpdateCheckDate = [DateTime](Get-Content $lastUpdateCheckPath)
+       $lastUpdateCheckDate = [DateTime]::ParseExact((Get-Content $lastUpdateCheckPath), "dd/MM/yyyy HH:mm:ss", $null)
        if(($currentDate - $lastUpdateCheckDate).Days -gt 15) {
             $isToCheckUpdates = $true
        }

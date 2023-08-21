@@ -8,7 +8,6 @@ function InstallModule($module) {
 function InstallModules($modules) {
     foreach($module in $modules)
     {
-        Write-Host $module
         InstallModule $module
     }
 }

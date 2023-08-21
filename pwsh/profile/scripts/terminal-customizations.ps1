@@ -17,7 +17,8 @@ Set-PSReadlineKeyHandler -Key DownArrow -Function HistorySearchForward
 oh-my-posh init pwsh --config "$env:OH_MY_POSH_CONFIG" | Invoke-Expression
 
 ### font settings
-if(!(Get-ChildItem C:\Windows\Fonts -Filter MesloLGMNerdFont*).Count -gt 1) {
+if(!((Get-ChildItem C:\Windows\Fonts -Filter MesloLGMNerdFont*).Count -gt 1)) {
+    Write-Host "Meslo font not installed. Installing..."
     oh-my-posh font install Meslo
 }
 
