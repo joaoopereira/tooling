@@ -5,10 +5,6 @@ function InstallModule($module) {
     }
 }
 
-function InstallModules($modules) {
-    foreach($module in $modules)
-    {
-        InstallModule $module
-    }
-}
-InstallModules git-aliases, WslInterop, Terminal-Icons
+InstallModule git-aliases
+InstallModule WslInterop
+InstallModule Terminal-Icons
