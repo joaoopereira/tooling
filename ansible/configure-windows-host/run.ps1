@@ -9,9 +9,6 @@ If(-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentit
 }
 
 #### Run
-Invoke-WebRequest $url -OutFile $file
-powershell.exe -ExecutionPolicy ByPass -File $file -EnableCredSSP -GlobalHttpFirewallAccess
+(New-Object -TypeName System.Net.WebClient).DownloadFile($url, $file)
 
-#### Cleanup
-Remove-Item $file -Force
-Remove-Item $PSCommandPath -Force
+powershell.exe -ExecutionPolicy ByPass -File $file -EnableCredSSP -GlobalHttpFirewallAccess

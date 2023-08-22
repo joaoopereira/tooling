@@ -4,14 +4,14 @@ RUN apk update && \
   apk add python3 py3-pip && \
   pip3 install --upgrade pip && \
   pip3 install --upgrade virtualenv && \
-  apk add gcc musl-dev python3-dev libffi-dev openssl-dev rust cargo && \
+  apk add gcc musl-dev python3-dev libffi-dev openssl-dev krb5-dev rust cargo && \
   pip3 install pywinrm && \
   pip3 install ansible && \
   pip3 install requests-credssp && \
   apk add bash && \
-  ansible-galaxy collection install community.windows && \
-  ansible-galaxy collection install community.general && \
   apk add freetds-dev && \
+  pip install pymssql && \
+  ansible-galaxy collection install community.windows && \
   rm -rf /var/cache/apk/* && \
   mkdir /local
 
