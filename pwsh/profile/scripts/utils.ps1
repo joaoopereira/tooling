@@ -49,10 +49,15 @@ function IsToCheckUpdates {
     $isToCheckUpdates = $false
 
     if(Test-Path $lastUpdateCheckPath) {
-       $lastUpdateCheckDate = [DateTime]::ParseExact((Get-Content $lastUpdateCheckPath), "dd/MM/yyyy HH:mm:ss", $null)
-       if(($currentDate - $lastUpdateCheckDate).Days -gt 15) {
-            $isToCheckUpdates = $true
-       }
+        try {
+            $lastUpdateCheckDate = [DateTime]::ParseExact((Get-Content $lastUpdateCheckPath), "dd/MM/yyyy HH:mm:ss", $null)
+            if(($currentDate - $lastUpdateCheckDate).Days -gt 15) {
+                $isToCheckUpdates = $true
+           }
+        }
+        catch {
+            Remove-Item $lastUpdateCheckPath -Force -ErrorAction SilentlyContinue -InformationAction SilentlyContinue
+        }
     }
     else {
         $isToCheckUpdates = $true
