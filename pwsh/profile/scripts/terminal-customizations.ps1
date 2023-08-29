@@ -38,6 +38,7 @@ if(Test-Path $terminalSettingsFile)
 {
     # Create the profiles object
     $defaults = @{
+        elevate = $true
         font = @{
             face = "MesloLGM Nerd Font"
             size = 10
