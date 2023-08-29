@@ -22,26 +22,10 @@ Import-Module git-aliases -DisableNameChecking
 # import wsl-alias
 . $PSScriptRoot/scripts/wsl-alias.ps1
 
-### tooling
-Set-Alias -Name portainer-stacks "$env:TOOLING_REPO/pwsh/portainer/portainer-manage-stacks.ps1" -Option AllScope
-
 ### git subrepo
 $env:GIT_SUBREPO_ROOT = "$PSScriptRoot/plugins/git-subrepo"
 $env:PATH = "$env:PATH;$env:GIT_SUBREPO_ROOT/lib"
 $env:MANPATH = "$env:GIT_SUBREPO_ROOT/man"
 
-
-#region lazy alias
-
-function o { explorer . && Clear-Host }
-
-function cupgrade { choco upgrade all -y }
-
-function ansible { docker run --rm -ti -v ${pwd}:/local ansible bash }
-
-Set-Alias -Name tupdate "$PSScriptRoot/scripts/update.ps1" -Option AllScope
-
-#endregion
-
-### computer init script alias
-Set-Alias -Name computer-init "$PSScriptRoot/scripts/computer-init.ps1" -Option AllScope
+### import alias
+. $PSScriptRoot/scripts/alias.ps1
