@@ -3,6 +3,8 @@ Set-Alias -Name portainer-stacks "$env:TOOLING_REPO/pwsh/portainer/portainer-man
 
 function ansible { docker run --rm -ti -v ${pwd}:/local ansible bash }
 
+function mkdocs { docker run --rm -t -v ${pwd}:/app -p 8001:80 mkdocs }
+
 Set-Alias -Name tupdate "$PSScriptRoot/scripts/update.ps1" -Option AllScope
 
 ### lazy alias
