@@ -74,6 +74,14 @@
           "template": "\ue77f {{ .Full }}"
         },
         {
+          "type": "docker",
+          "style": "powerline",
+          "powerline_symbol": " ",
+          "foreground": "#3079e4",
+          "background": "#333333",
+          "template": "\udb82\udc68 {{ .Context }}"
+        },
+        {
           "type": "kubectl",
           "style": "powerline",
           "powerline_symbol": " ",
