@@ -29,3 +29,6 @@ $env:MANPATH = "$env:GIT_SUBREPO_ROOT/man"
 
 ### import alias
 . $PSScriptRoot/scripts/alias.ps1
+
+### import chocolatey profile
+Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
