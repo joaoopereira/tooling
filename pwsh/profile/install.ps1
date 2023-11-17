@@ -1,11 +1,11 @@
 # chocolatey dependencies
 Invoke-Expression (New-Object System.Net.WebClient).DownloadString("https://raw.githubusercontent.com/joaoopereira/tooling/main/pwsh/profile/deps/chocolatey.ps1")
 
-# pwsh modules dependencies
-Invoke-Expression (New-Object System.Net.WebClient).DownloadString("https://raw.githubusercontent.com/joaoopereira/tooling/main/pwsh/profile/deps/pwsh-modules.ps1")
-
  # configure pwsh
 pwsh -Command {
+
+    # pwsh modules dependencies
+    Invoke-Expression (New-Object System.Net.WebClient).DownloadString("https://raw.githubusercontent.com/joaoopereira/tooling/main/pwsh/profile/deps/pwsh-modules.ps1")
 
     git clone https://github.com/joaoopereira/tooling.git ./tooling
     $basePath = "$pwd/tooling/pwsh/profile/base.ps1"
@@ -21,4 +21,4 @@ pwsh -Command {
 }
 
 # open
-pwsh
+Write-Host "Installation completed. Close this and open Windows Terminal" -ForegroundColor Green
