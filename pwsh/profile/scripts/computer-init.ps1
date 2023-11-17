@@ -13,5 +13,21 @@ function SetupChocoPackages($packageConfig) {
     }
 }
 
-SetupGit
+function DisableWin11ShowMoreOptions {
+    $regPath = 'HKCU:\Software\Classes\CLSID\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}'
+    Set-ItemProperty $regPath InprocServer32 ''
+}
+
+function SetupWindowsExplorer {
+    $regPath = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced'
+    Set-ItemProperty $regPath Hidden 1
+    Set-ItemProperty $regPath HideFileExt 0
+    Set-ItemProperty $regPath ShowSuperHidden 1
+    Stop-Process -processname explorer
+}
+
 SetupChocoPackages
+SetupGit
+DisableWin11ShowMoreOptions
+
+
