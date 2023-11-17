@@ -26,8 +26,8 @@ function SetupWindowsExplorer {
     Stop-Process -processname explorer
 }
 
-SetupChocoPackages
 SetupGit
+SetupWindowsExplorer
 DisableWin11ShowMoreOptions
-
+SetupChocoPackages
 
