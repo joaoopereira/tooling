@@ -5,7 +5,7 @@ if ($global:IS_WINDOWS_ADMIN -and [bool](Get-Command wsl -ErrorAction SilentlyCo
 	## CREDITS: https://github.com/mikebattista/PowerShell-WSL-Interop
 	Import-Module WslInterop
 	# import commands
-	Import-WslCommand "apt", "awk", "emacs", "find", "grep", "head", "less", "man", "sed", "seq", "sudo", "tail", "touch", "vim", "docker", "docker-compose", "date", "rm", "earthly", "openssl", "make", "wget", "export"
+	Import-WslCommand "apt", "awk", "emacs", "find", "grep", "head", "less", "man", "sed", "seq", "sudo", "tail", "touch", "vim", "date", "rm", "earthly", "openssl", "make", "wget", "export"
 
 	# restart wsl
 	function wslr {
