@@ -12,7 +12,7 @@ if ($global:IS_WINDOWS_ADMIN -and [bool](Get-Command wsl -ErrorAction SilentlyCo
 		Write-Host "Restarting wsl..." -ForegroundColor Gray
 		wsl --shutdown
 
-		# docker resstart
+		# docker restart
 		wsldr
 
 		# set hostname on hosts file
@@ -49,5 +49,13 @@ if ($global:IS_WINDOWS_ADMIN -and [bool](Get-Command wsl -ErrorAction SilentlyCo
 		while (!(isDockerRunning)) {
 			Start-Sleep -Milliseconds 500
 		}
+	}
+
+
+
+	function wsl-reinit {
+		### import computer-init functions
+		. $PSScriptRoot/computer-init-functions.ps1
+		SetupUbuntuWSL
 	}
 }
