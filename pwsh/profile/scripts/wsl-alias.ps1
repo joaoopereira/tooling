@@ -51,11 +51,11 @@ if ($global:IS_WINDOWS_ADMIN -and [bool](Get-Command wsl -ErrorAction SilentlyCo
 		}
 	}
 
-
-
 	function wsl-reinit {
 		### import computer-init functions
 		. $PSScriptRoot/computer-init-functions.ps1
 		SetupUbuntuWSL
 	}
+
+	function wslpwd { $pwd.Path.Replace("\","/").Replace("C:", "/mnt/c") }
 }
