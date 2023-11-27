@@ -4,6 +4,7 @@ function SetupGit() {
     git config --global user.name $userName
     git config --global user.email $userEmail
     git config --global core.editor "code --wait"
+    git config --global core.autocrlf true
 }
 
 function SetupChocoPackages() {
