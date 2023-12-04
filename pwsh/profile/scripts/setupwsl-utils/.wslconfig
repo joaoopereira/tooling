@@ -1,0 +1,9 @@
+[wsl2]
+guiapplications=false
+# Enable experimental features
+[experimental]
+sparseVhd=true
+autoMemoryReclaim=dropcache
+dnsTunneling=true
+networkingMode=mirrored
+autoProxy=true

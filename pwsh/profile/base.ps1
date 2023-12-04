@@ -2,7 +2,7 @@
 . $PSScriptRoot/scripts/utils.ps1
 
 ### environment variables
-$env:TOOLING_REPO = "$PSScriptRoot/../.."
+$env:TOOLING_REPO = Get-Item -Path "$PSScriptRoot/../.."
 $env:LOCAL_DOMAIN = $env:LOCAL_DOMAIN ?? "jopereira.local"
 
 ### pre-requirements

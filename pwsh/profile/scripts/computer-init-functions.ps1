@@ -37,6 +37,13 @@ function SetupUbuntuWSL($wslDistro = "wslubuntu2204") {
     (wsl --install --no-distribution) | Out-Null
     (wsl --set-default-version 2) | Out-Null
 
+    #.wslconfig file
+    $wslConfig = "$env:USERPROFILE\.wslconfig"
+    if(!(Test-Path $wslConfig))
+    {
+        Copy-Item -Path "$env:TOOLING_REPO\pwsh\profile\scripts\setupwsl-utils\.wslconfig" -Destination "$wslConfig"
+    }
+
     # distro download and unzip
     $wslDistroUrl = "https://aka.ms/$wslDistro"
     $fileFullPath  = "$env:TEMP\$wslDistro.appx"
@@ -102,7 +109,6 @@ function SetupUbuntuWSL($wslDistro = "wslubuntu2204") {
         # configure docker rootless
         (wsl -d $wslDistro bash -ic "$installFolder/pwsh/profile/scripts/setupwsl-utils/setupDockerRootless.sh") | Out-Null
 
-        docker context ls
         docker context create $wslDistro --docker "host=tcp://$($env:LOCAL_DOMAIN):2375"
     }
 }
