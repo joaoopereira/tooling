@@ -5,5 +5,3 @@ guiapplications=false
 sparseVhd=true
 autoMemoryReclaim=dropcache
 dnsTunneling=true
-networkingMode=mirrored
-autoProxy=true

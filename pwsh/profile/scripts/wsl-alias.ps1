@@ -5,7 +5,7 @@ if ($global:IS_WINDOWS_ADMIN -and [bool](Get-Command wsl -ErrorAction SilentlyCo
 	## CREDITS: https://github.com/mikebattista/PowerShell-WSL-Interop
 	Import-Module WslInterop
 	# import commands
-	Import-WslCommand "apt", "awk", "emacs", "find", "grep", "head", "less", "man", "sed", "seq", "sudo", "tail", "touch", "vim", "date", "rm", "earthly", "openssl", "make", "wget", "export"
+	Import-WslCommand "apt", "awk", "emacs", "find", "grep", "head", "less", "man", "sed", "seq", "sudo", "tail", "touch", "vim", "date", "earthly", "openssl", "make", "wget", "export"
 
 	# restart wsl
 	function wslr {
@@ -34,17 +34,26 @@ if ($global:IS_WINDOWS_ADMIN -and [bool](Get-Command wsl -ErrorAction SilentlyCo
 	}
 
 	function isDockerRunning {
-		return !(wsl docker ps 2>&1).ToString().Contains("Cannot connect to the Docker daemon");
+		return !(wsl bash -ic "docker ps 2>&1").ToString().Contains("Cannot connect to the Docker daemon")
 	}
 
 	# restart wsl
 	function wsldr {
 		Write-Host "Waiting for docker to start..." -ForegroundColor Gray
+		$systemd = ("running" -eq (wsl bash -ic "systemctl is-system-running"))
 		if (isDockerRunning) {
-			wsl bash -ic "sudo service docker stop &>/dev/null"
+			if(!$systemd) {
+				wsl bash -ic "sudo service docker stop &>/dev/null"
+			} else {
+				wsl bash -ic "sudo systemctl stop docker.service &>/dev/null"
+			}
 		}
 
-		wsl bash -ic "sudo service docker start &>/dev/null"
+		if(!$systemd) {
+			wsl bash -ic "sudo service docker start &>/dev/null &>/dev/null"
+		} else {
+			wsl bash -ic "sudo systemctl start docker.service"
+		}
 
 		while (!(isDockerRunning)) {
 			Start-Sleep -Milliseconds 500

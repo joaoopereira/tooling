@@ -101,7 +101,7 @@ function SetupUbuntuWSL($wslDistro = "wslubuntu2204") {
         Write-Host "Installing and Configuring docker..."
 
         # install and configure docker
-        wsl -d $wslDistro -u root bash -ic "$installFolder/pwsh/profile/scripts/setupwsl-utils/setupDocker.sh"
+        (wsl -d $wslDistro -u root bash -ic "$installFolder/pwsh/profile/scripts/setupwsl-utils/setupDocker.sh") | Out-Null
 
         # ensure WSL Distro is restarted
         (wsl -t $wslDistro) | Out-Null
