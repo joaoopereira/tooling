@@ -2,8 +2,9 @@
 . $PSScriptRoot/scripts/utils.ps1
 
 ### environment variables
-$env:TOOLING_REPO = Get-Item -Path "$PSScriptRoot/../.."
-$env:LOCAL_DOMAIN = $env:LOCAL_DOMAIN ?? "jopereira.local"
+$env:TOOLING_REPO = (Get-Item -Path "$PSScriptRoot/../..").FullName
+$env:LOCAL_DOMAIN = $env:LOCAL_DOMAIN ?? "computer.local"
+$env:WSL_DEFAULT_DISTRO = $env:WSL_DEFAULT_DISTRO ?? "Ubuntu"
 
 ### pre-requirements
 # check updates

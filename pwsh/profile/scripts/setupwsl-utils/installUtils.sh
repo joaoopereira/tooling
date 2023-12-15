@@ -28,4 +28,6 @@ modifyWslConf () {
   sudo echo "default=${USERNAME}" >> /etc/wsl.conf
   sudo echo "[boot]" >> /etc/wsl.conf
   sudo echo "systemd=true" >> /etc/wsl.conf
+  sudo echo "[automount]" >> /etc/wsl.conf
+  sudo echo "root=/" >> /etc/wsl.conf
 }

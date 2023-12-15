@@ -9,18 +9,40 @@ if ($global:IS_WINDOWS_ADMIN -and [bool](Get-Command wsl -ErrorAction SilentlyCo
 
 	# restart wsl
 	function wslr {
-		Write-Host "Restarting wsl..." -ForegroundColor Gray
-		wsl --shutdown
+		function isDockerRunning {
+			return !(wslbash "docker ps 2>&1").ToString().Contains("Cannot connect to the Docker daemon")
+		}
+
+		Write-Host "Restarting $($env:WSL_DEFAULT_DISTRO)..." -ForegroundColor Gray
+		wsl -t $env:WSL_DEFAULT_DISTRO
 
 		# docker restart
-		wsldr
+		Write-Host "Waiting for docker to start..." -ForegroundColor Gray
+		$systemd = ("running" -eq (wslbash "systemctl is-system-running"))
+		if (isDockerRunning) {
+			if(!$systemd) {
+				wslbash "sudo service docker stop &>/dev/null"
+			} else {
+				wslbash "sudo systemctl stop docker.service &>/dev/null"
+			}
+		}
+
+		if(!$systemd) {
+			wslbash "sudo service docker start &>/dev/null &>/dev/null"
+		} else {
+			wslbash "sudo systemctl start docker.service"
+		}
+
+		while (!(isDockerRunning)) {
+			Start-Sleep -Milliseconds 500
+		}
 
 		# set hostname on hosts file
 		wsl2host
 	}
 
 	## CREDITS: https://github.com/shayne/go-wsl2-host
-	function wsl2host {
+	function wsl2host($hostname = $env:LOCAL_DOMAIN) {
 		$wsl2hostPath = "$env:TOOLING_REPO/wsl2host.exe"
 		if(!(Test-Path $wsl2hostPath)) {
 			$ProgressPreference = 'SilentlyContinue'
@@ -28,36 +50,9 @@ if ($global:IS_WINDOWS_ADMIN -and [bool](Get-Command wsl -ErrorAction SilentlyCo
 			$ProgressPreference = 'Continue'
 		}
 
-		wsl bash -c "[[ -f ~/.wsl2hosts ]] && grep -q '$env:LOCAL_DOMAIN' ~/.wsl2hosts || echo '$env:LOCAL_DOMAIN' >> ~/.wsl2hosts"
+		wslbash "[[ -f ~/.wsl2hosts ]] && grep -q '$hostname' ~/.wsl2hosts || echo '$hostname' >> ~/.wsl2hosts"
 
 		Invoke-Expression "$wsl2hostPath run"
-	}
-
-	function isDockerRunning {
-		return !(wsl bash -ic "docker ps 2>&1").ToString().Contains("Cannot connect to the Docker daemon")
-	}
-
-	# restart wsl
-	function wsldr {
-		Write-Host "Waiting for docker to start..." -ForegroundColor Gray
-		$systemd = ("running" -eq (wsl bash -ic "systemctl is-system-running"))
-		if (isDockerRunning) {
-			if(!$systemd) {
-				wsl bash -ic "sudo service docker stop &>/dev/null"
-			} else {
-				wsl bash -ic "sudo systemctl stop docker.service &>/dev/null"
-			}
-		}
-
-		if(!$systemd) {
-			wsl bash -ic "sudo service docker start &>/dev/null &>/dev/null"
-		} else {
-			wsl bash -ic "sudo systemctl start docker.service"
-		}
-
-		while (!(isDockerRunning)) {
-			Start-Sleep -Milliseconds 500
-		}
 	}
 
 	function wsl-reinit {
@@ -67,4 +62,6 @@ if ($global:IS_WINDOWS_ADMIN -and [bool](Get-Command wsl -ErrorAction SilentlyCo
 	}
 
 	function wslpwd { $pwd.Path.Replace("\","/").Replace("C:", "/mnt/c") }
+
+	function wslbash ($bashCommand) { wsl -d $env:WSL_DEFAULT_DISTRO bash -c "$bashCommand"}
 }

@@ -4,7 +4,7 @@ function SetupGit() {
     git config --global user.name $userName
     git config --global user.email $userEmail
     git config --global core.editor "code --wait"
-    git config --global core.autocrlf true
+    git config --global core.autocrlf false
 }
 
 function SetupChocoPackages() {
@@ -29,13 +29,19 @@ function SetupWindowsExplorer {
     Stop-Process -processname explorer
 }
 
-function SetupUbuntuWSL($wslDistro = "wslubuntu2204") {
+function SetupUbuntuWSL() {
+    $wslDistro = $env:WSL_DEFAULT_DISTRO;
+    $wslHostname = "$wslDistro.$($env:LOCAL_DOMAIN)"
+
     # pre-requirements
     Write-Host "Installing WSL pre-requirements..."
     (dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart) | Out-Null
     (dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart) | Out-Null
     (wsl --install --no-distribution) | Out-Null
     (wsl --set-default-version 2) | Out-Null
+    # https://github.com/microsoft/WSL/issues/6264
+    $wslEthernetCard = "vEthernet (WSL)"
+    netsh int ipv4 set subinterface $wslEthernetCard mtu=1420 store=persistent
 
     #.wslconfig file
     $wslConfig = "$env:USERPROFILE\.wslconfig"
@@ -45,40 +51,26 @@ function SetupUbuntuWSL($wslDistro = "wslubuntu2204") {
     }
 
     # distro download and unzip
-    $wslDistroUrl = "https://aka.ms/$wslDistro"
-    $fileFullPath  = "$env:TEMP\$wslDistro.appx"
+    $wslDistroUrl = "https://cloud-images.ubuntu.com/wsl/jammy/current/ubuntu-jammy-wsl-amd64-wsl.rootfs.tar.gz"
+    $wslDistroFullPath  = "$env:TEMP\$wslDistro.tar.gz"
 
-    Write-Host "Downloading and Importing $wsldistro..."
-    if(!(Test-Path($fileFullPath))) {
-        $ProgressPreference = "SilentlyContinue"
-        Invoke-WebRequest $wslDistroUrl -OutFile $fileFullPath
-        $ProgressPreference = "Continue"
+    if(!(Test-Path($wslDistroFullPath))) {
+        Write-Host "Downloading $wslDistroUrl..."
+        Invoke-WebRequest $wslDistroUrl -OutFile $wslDistroFullPath
     }
     $wslInstallationPath = "$env:USERPROFILE\wsl\$wslDistro"
     $wslUsername = $env:USERNAME.ToLower().Replace(" ", "")
-    $wslStagingFolder = "$env:TEMP\$wslDistro-staging"
-
-    # create staging directory if it does not exists
-    if (!(Test-Path -Path $wslStagingFolder)) {
-        mkdir $wslStagingFolder | Out-Null
-    }
-
-    $ProgressPreference = "SilentlyContinue"
-    Copy-Item $env:TEMP\$wslDistro.appx $wslStagingFolder\$wslDistro-Temp.zip -Force | Out-Null
-    Expand-Archive $wslStagingFolder\$wslDistro-Temp.zip $wslStagingFolder\$wslDistro-Temp -Force | Out-Null
-    Move-Item $wslStagingFolder\$wslDistro-Temp\*_x64.appx $wslStagingFolder\$wslDistro.zip -Force | Out-Null
-    Expand-Archive $wslStagingFolder\$wslDistro.zip $wslStagingFolder\$wslDistro -Force | Out-Null
-    $ProgressPreference = "Continue"
 
     if (!(Test-Path -Path $wslInstallationPath)) {
         mkdir $wslInstallationPath | Out-Null
     }
 
     # import
-    (wsl --import $wslDistro $wslInstallationPath $wslStagingFolder\$wslDistro\install.tar.gz) | Out-Null
+    Write-Host "Importing $wslDistroFullPath as $wslDistro..."
+    (wsl --import $wslDistro $wslInstallationPath $wslDistroFullPath) | Out-Null
 
-    # cleanup
-    Remove-Item $wslStagingFolder\ -Recurse -Force
+    # set distro as default
+    wsl -s $wslDistro
 
     $installFolder = $env:TOOLING_REPO.Replace("\", "/")
     $installFolder = $installFolder.Replace("C:", "/mnt/c")
@@ -86,29 +78,39 @@ function SetupUbuntuWSL($wslDistro = "wslubuntu2204") {
     # create your user and add it to sudoers
     (wsl -d $wslDistro -u root bash -ic "$installFolder/pwsh/profile/scripts/setupwsl-utils/createUser.sh $wslUsername ubuntu") | Out-Null
 
+    $installFolder = $installFolder.Replace("/mnt/c", "/c")
+
     # ensure WSL Distro is restarted when first used with user account
     (wsl -t $wslDistro) | Out-Null
 
-    # configure local hostname
-    Write-Host "Setting $($env:LOCAL_DOMAIN) as hostname for distro"
-    wsl2host
+    Write-Host "Installing docker in $wslDistro..."
 
-    Write-Host "Do you want to install docker? (y/n) " -NoNewline
-    $configureDocker = $Host.UI.RawUI.ReadKey()
-    Write-Host
-    if($configureDocker.Character -eq "y")
+    # install and configure docker
+    (wsl -d $wslDistro -u root bash -ic "$installFolder/pwsh/profile/scripts/setupwsl-utils/setupDocker.sh") | Out-Null
+
+    # ensure WSL Distro is restarted
+    (wsl -t $wslDistro) | Out-Null
+
+    # configure docker rootless
+    (wsl -d $wslDistro bash -ic "$installFolder/pwsh/profile/scripts/setupwsl-utils/setupDockerRootless.sh") | Out-Null
+
+    # set distro as default
+    wsl -s $wslDistro
+
+    # install docker-cli
+    $docker = [bool](Get-Command docker -ErrorAction SilentlyContinue)
+    if(!$docker)
     {
-        Write-Host "Installing and Configuring docker..."
-
-        # install and configure docker
-        (wsl -d $wslDistro -u root bash -ic "$installFolder/pwsh/profile/scripts/setupwsl-utils/setupDocker.sh") | Out-Null
-
-        # ensure WSL Distro is restarted
-        (wsl -t $wslDistro) | Out-Null
-
-        # configure docker rootless
-        (wsl -d $wslDistro bash -ic "$installFolder/pwsh/profile/scripts/setupwsl-utils/setupDockerRootless.sh") | Out-Null
-
-        docker context create $wslDistro --docker "host=tcp://$($env:LOCAL_DOMAIN):2375"
+        Write-Host "docker is not installed. Installing..."
+        choco install -y docker-cli
     }
+    refreshenv
+
+    docker context create $wslDistro --docker "host=tcp://$($wslHostname):2375"
+
+    docker context use $wslDistro
+
+    # configure local hostname
+    Write-Host "Setting $wslHostname as hostname for distro"
+    wsl2host $wslHostname
 }
