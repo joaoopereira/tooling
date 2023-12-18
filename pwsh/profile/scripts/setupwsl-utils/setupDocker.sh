@@ -24,3 +24,4 @@ sudo update-alternatives --set iptables /usr/sbin/iptables-legacy >/dev/null
 sudo sed -i '/^ExecStart=.*dockerd/s/$/ -H tcp:\/\/0.0.0.0:2375/' /lib/systemd/system/docker.service
 sudo systemctl daemon-reload
 sudo systemctl restart docker.service
+docker swarm init
