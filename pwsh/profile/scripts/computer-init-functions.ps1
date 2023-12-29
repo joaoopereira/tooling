@@ -5,6 +5,7 @@ function SetupGit() {
     git config --global user.email $userEmail
     git config --global core.editor "code --wait"
     git config --global core.autocrlf false
+    git config --global core.eol lf
 }
 
 function SetupChocoPackages() {
@@ -39,9 +40,6 @@ function SetupUbuntuWSL() {
     (dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart) | Out-Null
     (wsl --install --no-distribution) | Out-Null
     (wsl --set-default-version 2) | Out-Null
-    # https://github.com/microsoft/WSL/issues/6264
-    $wslEthernetCard = "vEthernet (WSL)"
-    netsh int ipv4 set subinterface $wslEthernetCard mtu=1420 store=persistent
 
     #.wslconfig file
     $wslConfig = "$env:USERPROFILE\.wslconfig"
@@ -82,6 +80,13 @@ function SetupUbuntuWSL() {
 
     # ensure WSL Distro is restarted when first used with user account
     (wsl -t $wslDistro) | Out-Null
+
+    # https://github.com/microsoft/WSL/issues/6264
+    $wslEthernetInterface = (netsh interface ipv4 show subinterfaces | Select-String "vEthernet.*WSL.*").Matches.Value
+    if(!$wslEthernetInterface) {
+        throw "wsl ethernet interface not found!"
+    }
+    netsh int ipv4 set subinterface $wslEthernetInterface mtu=1420 store=persistent
 
     Write-Host "Installing docker in $wslDistro..."
 

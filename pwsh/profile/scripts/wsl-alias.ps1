@@ -55,10 +55,24 @@ if ($global:IS_WINDOWS_ADMIN -and [bool](Get-Command wsl -ErrorAction SilentlyCo
 		Invoke-Expression "$wsl2hostPath run"
 	}
 
-	function wsl-reinit {
+	function wsli {
 		### import computer-init functions
 		. $PSScriptRoot/computer-init-functions.ps1
-		SetupUbuntuWSL
+
+		$distroExists = ((wsl --list) -like "$env:WSL_DEFAULT_DISTRO*")
+		if($distroExists) {
+			Write-Host "$env:WSL_DEFAULT_DISTRO distro already exists and will be removed." -ForegroundColor Yellow
+			$yn = Read-Host "Do you want to continue? (y/n)"
+			while($yn -ne "y" -and $yn -ne "n") {
+				$yn = Read-Host "Do you want to continue? (y/n)"
+			}
+
+			if($yn -eq "n") {
+				return
+			}
+
+			SetupUbuntuWSL
+		}
 	}
 
 	function wslpwd { $pwd.Path.Replace("\","/").Replace("C:", "/mnt/c") }
