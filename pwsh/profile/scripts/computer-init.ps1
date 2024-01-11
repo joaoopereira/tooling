@@ -5,4 +5,4 @@ SetupGit
 SetupWindowsExplorer
 DisableWin11ShowMoreOptions
 SetupChocoPackages
-SetupUbuntuWSL
+SetupWSLDocker

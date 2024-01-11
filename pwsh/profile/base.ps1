@@ -5,6 +5,7 @@
 $env:TOOLING_REPO = (Get-Item -Path "$PSScriptRoot/../..").FullName
 $env:LOCAL_DOMAIN = $env:LOCAL_DOMAIN ?? "computer.local"
 $env:WSL_DEFAULT_DISTRO = $env:WSL_DEFAULT_DISTRO ?? "Ubuntu"
+$env:WSL_DOCKER_DISTRO = $env:WSL_DOCKER_DISTRO ?? "docker"
 
 ### pre-requirements
 # check updates

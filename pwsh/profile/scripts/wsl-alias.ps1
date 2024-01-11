@@ -8,7 +8,8 @@ if ($global:IS_WINDOWS_ADMIN -and [bool](Get-Command wsl -ErrorAction SilentlyCo
 	Import-WslCommand "apt", "awk", "emacs", "find", "grep", "head", "less", "man", "sed", "seq", "sudo", "tail", "touch", "vim", "date", "earthly", "openssl", "make", "wget", "export"
 
 	# restart wsl
-	function wslr {
+	function wslr($wslDistro = $env:WSL_DEFAULT_DISTRO) {
+		Write-Warning "wslr will be replaced by wsldockerr in a future release. Please run wsldockeri a dedicated wsl docker distro"
 		function isDockerRunning {
 			return !(wslbash "docker ps 2>&1").ToString().Contains("Cannot connect to the Docker daemon")
 		}
@@ -41,8 +42,40 @@ if ($global:IS_WINDOWS_ADMIN -and [bool](Get-Command wsl -ErrorAction SilentlyCo
 		wsl2host
 	}
 
+	function wsldockerr
+	{
+		function isDockerRunning {
+			return !(wsldockerbash "docker ps 2>&1").ToString().Contains("Cannot connect to the Docker daemon")
+		}
+
+		Write-Host "Restarting $($env:WSL_DOCKER_DISTRO)..." -ForegroundColor Gray
+		wsl -t $env:WSL_DOCKER_DISTRO
+
+		# docker restart
+		Write-Host "Waiting for docker to start..." -ForegroundColor Gray
+		$systemd = ("running" -eq (wsldockerbash "systemctl is-system-running"))
+		if (isDockerRunning) {
+			if(!$systemd) {
+				wsldockerbash "sudo service docker stop &>/dev/null"
+			} else {
+				wsldockerbash "sudo systemctl stop docker.service &>/dev/null"
+			}
+		}
+
+		if(!$systemd) {
+			wsldockerbash "sudo service docker start &>/dev/null &>/dev/null"
+		} else {
+			wsldockerbash "sudo systemctl start docker.service"
+		}
+
+		while (!(isDockerRunning)) {
+			Start-Sleep -Milliseconds 500
+		}
+	}
+
 	## CREDITS: https://github.com/shayne/go-wsl2-host
-	function wsl2host($hostname = $env:LOCAL_DOMAIN) {
+	function wsl2host($wslDistro = $env:WSL_DEFAULT_DISTRO) {
+		$wslHostname = "$wslDistro.$($env:LOCAL_DOMAIN)"
 		$wsl2hostPath = "$env:TOOLING_REPO/wsl2host.exe"
 		if(!(Test-Path $wsl2hostPath)) {
 			$ProgressPreference = 'SilentlyContinue'
@@ -50,18 +83,19 @@ if ($global:IS_WINDOWS_ADMIN -and [bool](Get-Command wsl -ErrorAction SilentlyCo
 			$ProgressPreference = 'Continue'
 		}
 
-		wslbash "[[ -f ~/.wsl2hosts ]] && grep -q '$hostname' ~/.wsl2hosts || echo '$hostname' >> ~/.wsl2hosts"
+		$command = "[[ -f ~/.wsl2hosts ]] && grep -q '$wslHostname' ~/.wsl2hosts || echo '$wslHostname' >> ~/.wsl2hosts"
+		wslbash $command $wslDistro
 
 		Invoke-Expression "$wsl2hostPath run"
 	}
 
-	function wsli {
+	function wsldockeri {
 		### import computer-init functions
 		. $PSScriptRoot/computer-init-functions.ps1
 
-		$distroExists = ((wsl --list) -like "$env:WSL_DEFAULT_DISTRO*")
+		$distroExists = ((wsl --list) -like "$env:WSL_DOCKER_DISTRO*")
 		if($distroExists) {
-			Write-Host "$env:WSL_DEFAULT_DISTRO distro already exists and will be removed." -ForegroundColor Yellow
+			Write-Host "$env:WSL_DOCKER_DISTRO distro already exists and will be removed." -ForegroundColor Yellow
 			$yn = Read-Host "Do you want to continue? (y/n)"
 			while($yn -ne "y" -and $yn -ne "n") {
 				$yn = Read-Host "Do you want to continue? (y/n)"
@@ -69,13 +103,16 @@ if ($global:IS_WINDOWS_ADMIN -and [bool](Get-Command wsl -ErrorAction SilentlyCo
 
 			if($yn -eq "n") {
 				return
+			} else {
+				wsl --unregister $env:WSL_DOCKER_DISTRO
 			}
-
-			SetupUbuntuWSL
 		}
+		SetupWSLDocker
 	}
 
 	function wslpwd { $pwd.Path.Replace("\","/").Replace("C:", "/mnt/c") }
 
-	function wslbash ($bashCommand) { wsl -d $env:WSL_DEFAULT_DISTRO bash -c "$bashCommand"}
+	function wslbash ($bashCommand, $wslDistro = $env:WSL_DEFAULT_DISTRO) { wsl -d $wslDistro bash -c "$bashCommand" }
+
+	function wsldockerbash ($bashCommand) { wslbash $bashCommand $env:WSL_DOCKER_DISTRO}
 }

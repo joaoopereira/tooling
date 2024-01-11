@@ -30,8 +30,7 @@ function SetupWindowsExplorer {
     Stop-Process -processname explorer
 }
 
-function SetupUbuntuWSL() {
-    $wslDistro = $env:WSL_DEFAULT_DISTRO;
+function SetupWSLDistro($wslDistro = "Ubuntu") {
     $wslHostname = "$wslDistro.$($env:LOCAL_DOMAIN)"
 
     # pre-requirements
@@ -43,14 +42,14 @@ function SetupUbuntuWSL() {
 
     #.wslconfig file
     $wslConfig = "$env:USERPROFILE\.wslconfig"
-    if(!(Test-Path $wslConfig))
-    {
+    if(!(Test-Path $wslConfig)) {
         Copy-Item -Path "$env:TOOLING_REPO\pwsh\profile\scripts\setupwsl-utils\.wslconfig" -Destination "$wslConfig"
     }
 
     # distro download and unzip
-    $wslDistroUrl = "https://cloud-images.ubuntu.com/wsl/jammy/current/ubuntu-jammy-wsl-amd64-wsl.rootfs.tar.gz"
-    $wslDistroFullPath  = "$env:TEMP\$wslDistro.tar.gz"
+    $wslDistroFile = "ubuntu-jammy-wsl-amd64-wsl.rootfs.tar.gz";
+    $wslDistroUrl = "https://cloud-images.ubuntu.com/wsl/jammy/current/$wslDistroFile"
+    $wslDistroFullPath  = "$env:TEMP\$wslDistroFile"
 
     if(!(Test-Path($wslDistroFullPath))) {
         Write-Host "Downloading $wslDistroUrl..."
@@ -70,34 +69,39 @@ function SetupUbuntuWSL() {
     # set distro as default
     wsl -s $wslDistro
 
-    $installFolder = $env:TOOLING_REPO.Replace("\", "/")
-    $installFolder = $installFolder.Replace("C:", "/mnt/c")
+    $toolingFolder = $env:TOOLING_REPO.Replace("\", "/").Replace("C:", "/mnt/c")
 
     # create your user and add it to sudoers
-    (wsl -d $wslDistro -u root bash -ic "$installFolder/pwsh/profile/scripts/setupwsl-utils/createUser.sh $wslUsername ubuntu") | Out-Null
+    (wsl -d $wslDistro -u root bash -ic "$toolingFolder/pwsh/profile/scripts/setupwsl-utils/createUser.sh $wslUsername ubuntu") | Out-Null
 
-    $installFolder = $installFolder.Replace("/mnt/c", "/c")
+    $toolingFolder = $toolingFolder.Replace("/mnt/c", "/c")
 
     # ensure WSL Distro is restarted when first used with user account
     (wsl -t $wslDistro) | Out-Null
 
-    # https://github.com/microsoft/WSL/issues/6264
-    $wslEthernetInterface = (netsh interface ipv4 show subinterfaces | Select-String "vEthernet.*WSL.*").Matches.Value
-    if(!$wslEthernetInterface) {
-        throw "wsl ethernet interface not found!"
-    }
-    netsh int ipv4 set subinterface $wslEthernetInterface mtu=1420 store=persistent
+    # configure local hostname
+    Write-Host "Setting $wslHostname as hostname for distro"
+    wsl2host $wslDistro
+}
 
-    Write-Host "Installing docker in $wslDistro..."
+function SetupWSLDocker() {
+    $wslDistro = $env:WSL_DOCKER_DISTRO
+    $wslHostname = "$wslDistro.$($env:LOCAL_DOMAIN)"
+
+    SetupWSLDistro $wslDistro
+
+    $toolingFolder = $env:TOOLING_REPO.Replace("\", "/").Replace("C:", "/c")
+
+    Write-Host "Installing docker..."
 
     # install and configure docker
-    (wsl -d $wslDistro -u root bash -ic "$installFolder/pwsh/profile/scripts/setupwsl-utils/setupDocker.sh") | Out-Null
+    (wsl -d $wslDistro -u root bash -ic "$toolingFolder/pwsh/profile/scripts/setupwsl-utils/setupDocker.sh") | Out-Null
 
     # ensure WSL Distro is restarted
     (wsl -t $wslDistro) | Out-Null
 
     # configure docker rootless
-    (wsl -d $wslDistro bash -ic "$installFolder/pwsh/profile/scripts/setupwsl-utils/setupDockerRootless.sh") | Out-Null
+    (wsl -d $wslDistro bash -ic "$toolingFolder/pwsh/profile/scripts/setupwsl-utils/setupDockerRootless.sh") | Out-Null
 
     # set distro as default
     wsl -s $wslDistro
@@ -114,8 +118,4 @@ function SetupUbuntuWSL() {
     docker context create $wslDistro --docker "host=tcp://$($wslHostname):2375"
 
     docker context use $wslDistro
-
-    # configure local hostname
-    Write-Host "Setting $wslHostname as hostname for distro"
-    wsl2host $wslHostname
 }
